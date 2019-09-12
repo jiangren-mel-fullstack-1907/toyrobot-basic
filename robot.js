@@ -35,25 +35,50 @@ class Game {
 
 }
 
-let game = new Game(10, 2, 'R');
+class GameMachine extends Game {
+    constructor(mapSize, initPosition, icon) {
+        super(mapSize, initPosition, icon);
+        this.on = true;
+    }
+
+    start() {
+        this.on = true;
+    }
+
+    stop() { 
+        this.on = false;
+    }
+
+    render() {
+        if (this.on) {
+            return super.render();
+        } else {
+            return 'You need to start the machine first.'
+        }
+    }
+}
+
+let game = new GameMachine(10, 2, 'R');
 game.render();
 
 
 var stdin = process.openStdin();
 
-stdin.addListener("data", function(d) {
+stdin.addListener("data", function (d) {
     // note:  d is an object, and when converted to a string it will
     // end with a linefeed.  so we (rather crudely) account for that  
     // with toString() and then trim() 
     let command = d.toString().trim();
 
     if (command === 'start') {
-        game = new Game(5, 0, 'R');
+        game = new GameMachine(5, 0, 'R');
     } else if (command === 'left') {
         game.onCommandLeft();
     } else if (command === 'right') {
         game.onCommandRight();
     } else if (command === 'report') {
         console.log(game.render());
+    } else if (command === 'stop') {
+        game.stop();
     }
 });
